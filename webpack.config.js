@@ -1,16 +1,12 @@
-// Webpack uses this to work with directories
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-// This is the main configuration object.
-// Here, you write different options and tell Webpack what to do
 module.exports = {
-    // Path to your entry point. From this file Webpack will begin its work
+    // Il file js dove vengono importati tutti gli altri file js
     entry: "./src/scripts/scripts.js",
 
-    // Path and filename of your result bundle.
-    // Webpack will bundle all JavaScript into this file
+    // Cartella publica
     output: {
         path: path.resolve(__dirname, "dist"),
         publicPath: "",
@@ -34,23 +30,19 @@ module.exports = {
 
             // Sass
             {
-                // Apply rule for .sass, .scss or .css files
+                // Test serve per capire che tipo di file deve convertire. Questa è una
+                // regex. In questo caso prenderà tutti i file scss, sass, css
                 test: /\.(sa|sc|c)ss$/,
 
-                // Set loaders to transform files.
-                // Loaders are applying from right to left(!)
-                // The first loader will be applied after others
+                // Configurazioni standard
                 use: [
                     {
-                        // This loader resolves url() and @imports inside CSS
                         loader: "css-loader",
                     },
                     {
-                        // Then we apply postCSS fixes like autoprefixer and minifying
                         loader: "postcss-loader",
                     },
                     {
-                        // First we transform SASS to standard CSS
                         loader: "sass-loader",
                         options: {
                             implementation: require("sass"),
@@ -59,45 +51,39 @@ module.exports = {
                 ],
             },
 
+            // Questo ti minimizza il css e te lo sposta in un singolo file nella dist
             {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
                     {
-                        // After all CSS loaders, we use a plugin to do its work.
-                        // It gets all transformed CSS and extracts it into separate
-                        // single bundled file
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
                         loader: "css-loader",
                     },
-                    /* ... Other loaders ... */
                 ],
             },
 
             // Css loader
+            // Non le userai ma serve in caso tu debba mettere nel css
+            // Qualcosa come background-image: url(). Mo te lo spiego in chiamata
             {
-                // Now we apply rule for images
                 test: /\.(png|jpe?g|gif|svg)$/,
                 use: [
                     {
-                        // Using file-loader for these files
                         loader: "file-loader",
 
-                        // In options we can set different things like format
-                        // and directory to save
                         options: {
                             outputPath: "images",
                         },
                     },
                 ],
             },
+            // Stessa cosa per quello su ma per i font
             {
-                // Apply rule for fonts files
                 test: /\.(woff|woff2|ttf|otf|eot)$/,
                 use: [
                     {
-                        // Using file-loader too
                         loader: "file-loader",
                         options: {
                             outputPath: "fonts",
@@ -112,10 +98,12 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "styles.css",
         }),
+        // Questo sotto ti genera l'html nella cartella dist prendendo di riferimento
+        // Il singolo file in src
         new HtmlWebpackPlugin({
             hash: true,
             template: "src/template/index.html",
-            filename: "index.html", //relative to root of the application
+            filename: "index.html",
         }),
     ],
 

@@ -10,16 +10,16 @@ const middlewares = jsonServer.defaults();
 // Public folder
 app.use(express.static("dist"));
 
-// start the server
 app.listen(PORT, () => {
     console.log("app started");
 });
 
-// route our app
+// Route della app
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/dist/index.html");
 });
 
+// Qua sotto la chiamata finta al db
 server.use(middlewares);
 server.use(router);
 server.listen(3000, () => {
